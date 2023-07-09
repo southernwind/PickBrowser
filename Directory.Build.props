@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>preview</AnalysisLevel>
+  </PropertyGroup>
+</Project>

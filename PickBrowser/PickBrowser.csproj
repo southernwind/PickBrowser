@@ -1,10 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-
+	<ItemGroup>
+    <PackageReference Include="BCMakeCert " />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="FiddlerCore5" />
+    <PackageReference Include="FiddlerCore5.NetworkConnections" />
+    <PackageReference Include="MahApps.Metro.IconPacks" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Web.WebView2" />
+    <PackageReference Include="ReactiveProperty" />
+    <PackageReference Include="System.Interactive" />
+    <PackageReference Include="System.Reactive" />
+	</ItemGroup>
 </Project>

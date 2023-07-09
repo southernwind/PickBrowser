@@ -13,16 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PickBrowser
-{
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-    }
+namespace PickBrowser.Views {
+	/// <summary>
+	/// BrowserView.xaml の相互作用ロジック
+	/// </summary>
+	public partial class BrowserView : UserControl {
+		public BrowserView() {
+			InitializeComponent();
+		}
+	}
 }

@@ -1,0 +1,22 @@
+<Window x:Class="PickBrowser.Views.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:PickBrowser.Views"
+		xmlns:vm="clr-namespace:PickBrowser.ViewModels"
+		mc:Ignorable="d"
+		Title="MainWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance vm:MainWindowViewModel}">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="200px"/>
+		</Grid.ColumnDefinitions>
+		<local:BrowserView
+			Grid.Column="0"
+			DataContext="{Binding BrowserViewModel}"/>
+		<local:NetworkView
+			Grid.Column="1"
+			DataContext="{Binding NetworkViewModel}"/>
+	</Grid>
+</Window>
