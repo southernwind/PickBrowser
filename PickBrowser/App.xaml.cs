@@ -5,6 +5,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
+using PickBrowser.Models.Browser;
 using PickBrowser.Models.Network;
 using PickBrowser.Services;
 using PickBrowser.ViewModels;
@@ -23,6 +24,7 @@ public partial class App : Application {
 				.AddTransient<NetworkViewModel>()
 				.AddTransient<NetworkModel>()
 				.AddTransient<BrowserViewModel>()
+				.AddTransient<BrowserModel>()
 				.BuildServiceProvider()
 			);
 

@@ -33,20 +33,47 @@
 			</Style>
 		</DockPanel.Resources>
 		<DockPanel DockPanel.Dock="Top">
-			<Button DockPanel.Dock="Left">
+			<Button DockPanel.Dock="Left" Command="{Binding BackCommand}">
 				<iconPacks:PackIconMaterialDesign Kind="ArrowBack" />
 			</Button>
-			<Button DockPanel.Dock="Left">
+			<Button DockPanel.Dock="Left" Command="{Binding ForwardCommand}">
 				<iconPacks:PackIconMaterialDesign Kind="ArrowForward" />
 			</Button>
-			<Button DockPanel.Dock="Left">
+			<Button DockPanel.Dock="Left" Command="{Binding ReloadCommand}">
+				<Button.Resources>
+					<Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+						<Setter Property="Visibility" Value="Visible"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsBusy.Value}" Value="true">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Resources>
 				<iconPacks:PackIconZondicons Kind="Reload" />
 			</Button>
-			<Button DockPanel.Dock="Left">
+			<Button DockPanel.Dock="Left" Command="{Binding StopCommand}">
+				<Button.Resources>
+					<Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+						<Setter Property="Visibility" Value="Visible"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsBusy.Value}" Value="false">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Resources>
+				<iconPacks:PackIconZondicons Kind="Close" />
+			</Button>
+			<Button DockPanel.Dock="Left" Command="{Binding HomeCommand}">
 				<iconPacks:PackIconRemixIcon Kind="Home2Line" />
 			</Button>
-			<TextBox/>
+			<TextBox Text="{Binding Url.Value}">
+				<TextBox.InputBindings>
+					<KeyBinding Gesture="Enter" Command="{Binding NavigateCommand}" CommandParameter="{Binding Text,RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+				</TextBox.InputBindings>
+			</TextBox>
 		</DockPanel>
-		<wv2:WebView2 />
+		<wv2:WebView2 x:Name="WebView"/>
 	</DockPanel>
 </UserControl>
