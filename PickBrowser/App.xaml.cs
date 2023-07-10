@@ -29,5 +29,8 @@ public partial class App : Application {
 			);
 
 		this.InitializeComponent();
+
+		var ps = Ioc.Default.GetService<ProxyService>();
+		ps!.Start();
 	}
 }

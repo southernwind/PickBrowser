@@ -8,6 +8,5 @@ internal class NetworkViewModel {
 	}
 	public NetworkViewModel(NetworkModel networkModel) {
 		this.RequestList = networkModel.RequestList.ToReadOnlyReactiveCollection();
-		new MahApps.Metro.IconPacks.PackIconMaterial();
 	}
 }

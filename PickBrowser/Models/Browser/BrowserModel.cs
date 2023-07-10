@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Microsoft.Web.WebView2.Wpf;
 
+using PickBrowser.Services;
+
 namespace PickBrowser.Models.Browser;
 
 internal class BrowserModel {
@@ -29,7 +31,6 @@ internal class BrowserModel {
 	} = new();
 
 	public BrowserModel() {
-
 	}
 
 	public void SetWebView(WebView2 webView2) {

@@ -1,5 +1,7 @@
 using System.Windows.Controls;
 
+using Microsoft.Web.WebView2.Core;
+
 using PickBrowser.ViewModels;
 
 namespace PickBrowser.Views;
@@ -13,7 +15,10 @@ public partial class BrowserView : UserControl {
 			if (this.DataContext is not BrowserViewModel bvm) {
 				throw new Exception("BrowserViewModel not found");
 			}
-			await this.WebView.EnsureCoreWebView2Async();
+			var Options = new CoreWebView2EnvironmentOptions();
+			Options.AdditionalBrowserArguments = "--proxy-server=http://127.0.0.1:23081";
+			var env = await CoreWebView2Environment.CreateAsync(null, null, Options);
+			await this.WebView.EnsureCoreWebView2Async(env);
 			bvm.SetWebView(this.WebView);
 		};
 	}
