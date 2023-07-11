@@ -4,6 +4,14 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Assets\BlockDomains.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\BlockDomains.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 	<ItemGroup>
     <PackageReference Include="BCMakeCert " />
     <PackageReference Include="CommunityToolkit.Mvvm" />
@@ -15,5 +23,8 @@
     <PackageReference Include="ReactiveProperty" />
     <PackageReference Include="System.Interactive" />
     <PackageReference Include="System.Reactive" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\ScrapingLibrary\ScrapingLibrary\ScrapingLibrary.csproj" />
 	</ItemGroup>
 </Project>

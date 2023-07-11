@@ -1,10 +1,12 @@
-using System.Reactive.Linq;
+using System.IO;
+using System.Text.RegularExpressions;
 
 using Fiddler;
 
 namespace PickBrowser.Services;
 
-internal class ProxyService {
+public class ProxyService {
+	private readonly string[] _blockDomainList;
 	public ReactiveProperty<Session?> AfterSessionComplete {
 		get;
 	}
@@ -88,6 +90,21 @@ internal class ProxyService {
 		   h => FiddlerApplication.ResponseHeadersAvailable += h,
 		   h => FiddlerApplication.ResponseHeadersAvailable -= h)
 		   .ToReactiveProperty();
+
+		var domains = File.ReadAllLines("Assets\\BlockDomains.txt").ToList();
+		if (Directory.Exists("Assets\\BlockDomains")) {
+			foreach (var file in Directory.EnumerateFiles("Assets\\BlockDomains").Where(x => x.EndsWith(".txt"))) {
+				 domains.AddRange(File.ReadAllLines(file));
+			}
+		}
+		this._blockDomainList = domains.OrderBy(x => x).ToArray();
+
+		this.BeforeRequest.Where(x => x != null).Subscribe(x => {
+			var domain = Regex.Replace(x!.url, "/.*$", "");
+			if (this._blockDomainList.Any(x =>domain.EndsWith(x))) {
+				x.Abort();
+			}
+		});
 	}
 
 	public void Start() {

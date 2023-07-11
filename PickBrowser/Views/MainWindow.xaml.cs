@@ -1,7 +1,5 @@
 using System.Windows;
 
-using CommunityToolkit.Mvvm.DependencyInjection;
-
 using PickBrowser.ViewModels;
 
 namespace PickBrowser.Views;
@@ -11,13 +9,9 @@ namespace PickBrowser.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    public MainWindow(MainWindowViewModel mainWindowViewModel)
     {
         this.InitializeComponent();
-		this.DataContext = Ioc.Default.GetService<MainWindowViewModel>();
-    }
-
-	private void BrowserView_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
-
+		this.DataContext = mainWindowViewModel;
     }
 }

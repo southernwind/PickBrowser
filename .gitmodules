@@ -1,0 +1,3 @@
+[submodule "ScrapingLibrary"]
+	path = ScrapingLibrary
+	url = https://github.com/southernwind/ScrapingLibrary

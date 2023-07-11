@@ -10,7 +10,7 @@ using PickBrowser.Services;
 
 namespace PickBrowser.Models.Browser;
 
-internal class BrowserModel {
+public class BrowserModel {
 	public WebView2? WebView {
 		get;
 		private set;
@@ -45,6 +45,10 @@ internal class BrowserModel {
 		};
 		webView2.NavigationCompleted += (_, _) => {
 			this.IsBusy.Value = false;
+		};
+		webView2.CoreWebView2.NewWindowRequested += (_, e) => {
+			e.Handled = true;
+			this.Navigate(e.Uri);
 		};
 	}
 

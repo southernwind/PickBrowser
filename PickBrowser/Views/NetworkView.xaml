@@ -4,14 +4,78 @@
 				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 				xmlns:vm="clr-namespace:PickBrowser.ViewModels"
-				xmlns:local="clr-namespace:PickBrowser.Views"
-				mc:Ignorable="d" 
+				xmlns:local="clr-namespace:PickBrowser.Views" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+			 mc:Ignorable="d" 
 				d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance vm:NetworkViewModel}">
-	<ListBox ItemsSource="{Binding RequestList}" >
-		<ListBox.ItemTemplate>
-			<DataTemplate>
-				<TextBlock Text="{Binding url}"/>
-			</DataTemplate>
-		</ListBox.ItemTemplate>
-	</ListBox>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="5px"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Grid Grid.Column="0" >
+			<Grid.RowDefinitions>
+				<RowDefinition Height="30px"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<TextBox
+				Grid.Row="0"
+				Text="{Binding UrlFilter.Value,Mode=OneWayToSource}"/>
+			<ListBox
+				Grid.Row="1"
+				ItemsSource="{Binding FilteredRequestList}"
+				SelectedItem="{Binding SelectedRequest.Value}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal">
+							<Button
+								Command="{Binding DataContext.DownloadCommand,RelativeSource={RelativeSource AncestorType=ListBox}}"
+								CommandParameter="{Binding }">
+								<iconPacks:PackIconTypicons Kind="Download" />
+							</Button>
+							<TextBlock Text="{Binding RequestUrl}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+		<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+		<StackPanel Grid.Column="2">
+			<Expander Header="General" IsExpanded="True">
+				<ItemsControl ItemsSource="{Binding SelectedRequest.Value.GeneralHeaders}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBlock>
+								<Run  Text="{Binding Key,Mode=OneTime}"/>
+								<Run  Text=":"/>
+								<Run  Text="{Binding Value,Mode=OneTime}"/>
+							</TextBlock>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Expander>
+			<Expander Header="Response" IsExpanded="True">
+				<ItemsControl ItemsSource="{Binding SelectedRequest.Value.ResponseHeaders}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBlock>
+								<Run  Text="{Binding Mode=OneTime}"/>
+							</TextBlock>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Expander>
+			<Expander Header="Request" IsExpanded="True">
+				<ItemsControl ItemsSource="{Binding SelectedRequest.Value.RequestHeaders}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBlock>
+								<Run  Text="{Binding Mode=OneTime}"/>
+							</TextBlock>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Expander>
+		</StackPanel>
+	</Grid>
 </UserControl>

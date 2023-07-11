@@ -1,15 +1,13 @@
 namespace PickBrowser.ViewModels;
 
-internal class MainWindowViewModel {
+public class MainWindowViewModel(NetworkViewModel networkViewModel, BrowserViewModel browserViewModel, DownloadViewModel downloadViewModel) {
 	public NetworkViewModel NetworkViewModel {
 		get;
-	}
-	public BrowserViewModel BrowserViewModel{
+	} = networkViewModel;
+	public BrowserViewModel BrowserViewModel {
 		get;
-	}
-
-	public MainWindowViewModel(NetworkViewModel networkViewModel, BrowserViewModel browserViewModel) {
-		this.NetworkViewModel = networkViewModel;
-		this.BrowserViewModel = browserViewModel;
-	}
+	} = browserViewModel;
+	public DownloadViewModel DownloadViewModel {
+		get;
+	} = downloadViewModel;
 }

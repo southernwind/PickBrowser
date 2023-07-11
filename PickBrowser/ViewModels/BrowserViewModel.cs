@@ -2,10 +2,8 @@ using Microsoft.Web.WebView2.Wpf;
 
 using PickBrowser.Models.Browser;
 
-using Reactive.Bindings.Extensions;
-
 namespace PickBrowser.ViewModels;
-internal class BrowserViewModel {
+public class BrowserViewModel {
 	private readonly BrowserModel _browserModel;
 	public ReactiveProperty<string> Url {
 		get;
