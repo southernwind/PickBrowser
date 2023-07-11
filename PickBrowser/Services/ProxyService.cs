@@ -7,6 +7,7 @@ namespace PickBrowser.Services;
 
 public class ProxyService {
 	private readonly string[] _blockDomainList;
+	private readonly ConfigManageService _configManageService;
 	public ReactiveProperty<Session?> AfterSessionComplete {
 		get;
 	}
@@ -35,7 +36,8 @@ public class ProxyService {
 		get;
 	}
 
-	public ProxyService() {
+	public ProxyService(ConfigManageService configManageService) {
+		this._configManageService = configManageService;
 		this.AfterSessionComplete = Observable.FromEvent<SessionStateHandler, Session>(
 			h => (e) => h(e),
 			h => FiddlerApplication.AfterSessionComplete += h,
@@ -91,6 +93,7 @@ public class ProxyService {
 		   h => FiddlerApplication.ResponseHeadersAvailable -= h)
 		   .ToReactiveProperty();
 
+		// ドメインブロック
 		var domains = File.ReadAllLines("Assets\\BlockDomains.txt").ToList();
 		if (Directory.Exists("Assets\\BlockDomains")) {
 			foreach (var file in Directory.EnumerateFiles("Assets\\BlockDomains").Where(x => x.EndsWith(".txt"))) {
@@ -108,10 +111,21 @@ public class ProxyService {
 	}
 
 	public void Start() {
+		FiddlerApplication.Prefs.SetStringPref("fiddler.certmaker.bc.key", this._configManageService.Config.CertConfig.Key.Value);
+		FiddlerApplication.Prefs.SetStringPref("fiddler.certmaker.bc.cert", this._configManageService.Config.CertConfig.Cert.Value);
+
 		// 証明書インストール
 		if (!CertMaker.rootCertExists()) {
-			CertMaker.createRootCert();
-			CertMaker.trustRootCert();
+			if (!CertMaker.createRootCert()) {
+				throw new Exception("create root cert failed");
+			}
+			if (!CertMaker.trustRootCert()) {
+				throw new Exception("trust root cert failed");
+			}
+
+			this._configManageService.Config.CertConfig.Key.Value = FiddlerApplication.Prefs.GetStringPref("fiddler.certmaker.bc.key", null);
+			this._configManageService.Config.CertConfig.Cert.Value = FiddlerApplication.Prefs.GetStringPref("fiddler.certmaker.bc.cert", null);
+			this._configManageService.Save();
 		}
 
 		// プロキシサーバー開始

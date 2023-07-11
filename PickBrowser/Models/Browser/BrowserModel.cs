@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Wpf;
 
 using PickBrowser.Services;
+using PickBrowser.Services.Config;
 
 namespace PickBrowser.Models.Browser;
 
 public class BrowserModel {
+	private readonly Config _config;
 	public WebView2? WebView {
 		get;
 		private set;
@@ -30,7 +32,8 @@ public class BrowserModel {
 		get;
 	} = new();
 
-	public BrowserModel() {
+	public BrowserModel(Config config) {
+		this._config = config;
 	}
 
 	public void SetWebView(WebView2 webView2) {
@@ -76,6 +79,6 @@ public class BrowserModel {
 	}
 
 	public void Home() {
-		this.Navigate("https://www.google.com/");
+		this.Navigate(this._config.GeneralConfig.HomeUrl.Value);
 	}
 }

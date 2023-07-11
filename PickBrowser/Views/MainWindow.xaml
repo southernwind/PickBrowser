@@ -7,24 +7,29 @@
 		xmlns:vm="clr-namespace:PickBrowser.ViewModels"
 		mc:Ignorable="d"
 		Title="MainWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance vm:MainWindowViewModel}">
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="5px"/>
-			<ColumnDefinition Width="3*"/>
-			<ColumnDefinition Width="5px"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<local:DownloadView
-			Grid.Column="0"
-			DataContext="{Binding DownloadViewModel}"/>
-		<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
-		<local:BrowserView
-			Grid.Column="2"
-			DataContext="{Binding BrowserViewModel}"/>
-		<GridSplitter Grid.Column="3" HorizontalAlignment="Stretch"/>
-		<local:NetworkView
-			Grid.Column="4"
-			DataContext="{Binding NetworkViewModel}"/>
-	</Grid>
+	<DockPanel>
+		<local:StatusBarView
+			DataContext="{Binding StatusBarViewModel}"
+			DockPanel.Dock="Bottom"/>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="5px"/>
+				<ColumnDefinition Width="3*"/>
+				<ColumnDefinition Width="5px"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<local:DownloadView
+				Grid.Column="0"
+				DataContext="{Binding DownloadViewModel}"/>
+			<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+			<local:BrowserView
+				Grid.Column="2"
+				DataContext="{Binding BrowserViewModel}"/>
+			<GridSplitter Grid.Column="3" HorizontalAlignment="Stretch"/>
+			<local:NetworkView
+				Grid.Column="4"
+				DataContext="{Binding NetworkViewModel}"/>
+		</Grid>
+	</DockPanel>
 </Window>

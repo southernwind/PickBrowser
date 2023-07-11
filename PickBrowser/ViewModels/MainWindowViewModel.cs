@@ -1,6 +1,6 @@
 namespace PickBrowser.ViewModels;
 
-public class MainWindowViewModel(NetworkViewModel networkViewModel, BrowserViewModel browserViewModel, DownloadViewModel downloadViewModel) {
+public class MainWindowViewModel(NetworkViewModel networkViewModel, BrowserViewModel browserViewModel, DownloadViewModel downloadViewModel, StatusBarViewModel statusBarViewModel) {
 	public NetworkViewModel NetworkViewModel {
 		get;
 	} = networkViewModel;
@@ -10,4 +10,7 @@ public class MainWindowViewModel(NetworkViewModel networkViewModel, BrowserViewM
 	public DownloadViewModel DownloadViewModel {
 		get;
 	} = downloadViewModel;
+	public StatusBarViewModel StatusBarViewModel {
+		get;
+	} = statusBarViewModel;
 }

@@ -5,8 +5,9 @@
     <PackageReference Update="FiddlerCore5" Version="5.0.2"/>
     <PackageReference Update="FiddlerCore5.NetworkConnections" Version="0.2.0"/>
     <PackageReference Update="MahApps.Metro.IconPacks" Version="4.11.0"/>
-    <PackageReference Update="Microsoft.Web.WebView2" Version="1.0.1823.32" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
+    <PackageReference Update="Microsoft.Web.WebView2" Version="1.0.1823.32" />
+    <PackageReference Update="MvvmDialogs" Version="9.1.0"/>
     <PackageReference Update="ReactiveProperty" Version="9.2.0"/>
     <PackageReference Update="System.Interactive" Version="6.0.1"/>
     <PackageReference Update="System.Reactive" Version="6.0.0"/>
