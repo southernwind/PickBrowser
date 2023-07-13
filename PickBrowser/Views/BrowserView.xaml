@@ -3,77 +3,36 @@
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 				xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-				xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
 				xmlns:local="clr-namespace:PickBrowser.Views"
-				xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
 				xmlns:vm="clr-namespace:PickBrowser.ViewModels"
+				xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
 				mc:Ignorable="d" 
 				d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance vm:BrowserViewModel}">
 	<DockPanel>
-		<DockPanel.Resources>
-			<Style TargetType="Button">
-				<Setter Property="Height" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" />
-				<Setter Property="Background" Value="Transparent"/>
-				<Setter Property="BorderBrush" Value="Transparent"/>
-				<Setter Property="Margin" Value="5px"/>
-				<Style.Resources>
-					<Style TargetType="{x:Type Border}">
-						<Setter Property="CornerRadius" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" />
-					</Style>
-				</Style.Resources>
-			</Style>
-			<Style TargetType="TextBox">
-				<Setter Property="Margin" Value="5px"/>
-				<Setter Property="Padding" Value="5px"/>
-				<Style.Resources>
-					<Style TargetType="{x:Type Border}">
-						<Setter Property="CornerRadius" Value="7" />
-					</Style>
-				</Style.Resources>
-			</Style>
-		</DockPanel.Resources>
-		<DockPanel DockPanel.Dock="Top">
-			<Button DockPanel.Dock="Left" Command="{Binding BackCommand}">
-				<iconPacks:PackIconMaterialDesign Kind="ArrowBack" />
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+			<Button Command="{Binding OpenTabCommand}">
+				<iconPacks:PackIconOcticons Kind="Plus"/>
 			</Button>
-			<Button DockPanel.Dock="Left" Command="{Binding ForwardCommand}">
-				<iconPacks:PackIconMaterialDesign Kind="ArrowForward" />
-			</Button>
-			<Button DockPanel.Dock="Left" Command="{Binding ReloadCommand}">
-				<Button.Resources>
-					<Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-						<Setter Property="Visibility" Value="Visible"/>
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding IsBusy.Value}" Value="true">
-								<Setter Property="Visibility" Value="Collapsed"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</Button.Resources>
-				<iconPacks:PackIconZondicons Kind="Reload" />
-			</Button>
-			<Button DockPanel.Dock="Left" Command="{Binding StopCommand}">
-				<Button.Resources>
-					<Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-						<Setter Property="Visibility" Value="Visible"/>
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding IsBusy.Value}" Value="false">
-								<Setter Property="Visibility" Value="Collapsed"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</Button.Resources>
-				<iconPacks:PackIconZondicons Kind="Close" />
-			</Button>
-			<Button DockPanel.Dock="Left" Command="{Binding HomeCommand}">
-				<iconPacks:PackIconRemixIcon Kind="Home2Line" />
-			</Button>
-			<TextBox Text="{Binding Url.Value}">
-				<TextBox.InputBindings>
-					<KeyBinding Gesture="Enter" Command="{Binding NavigateCommand}" CommandParameter="{Binding Text,RelativeSource={RelativeSource AncestorType=TextBox}}"/>
-				</TextBox.InputBindings>
-			</TextBox>
-		</DockPanel>
-		<wv2:WebView2 x:Name="WebView"/>
+		</StackPanel>
+		<TabControl
+			ItemsSource="{Binding Tabs}"
+			SelectedItem="{Binding CurrentTab.Value,Mode=TwoWay}">
+			<TabControl.ItemTemplate>
+				<DataTemplate>
+					<DockPanel>
+						<Image DockPanel.Dock="Left" Source="{Binding FaviconUri.Value}" Width="32px" Height="32px"/>
+						<Button DockPanel.Dock="Right" Command="{Binding CloseTab}">
+							<iconPacks:PackIconEvaIcons Kind="Close" />
+						</Button>
+						<TextBlock Margin="5px 10px" Text="{Binding PageTitle.Value}" HorizontalAlignment="Center"/>
+					</DockPanel>
+				</DataTemplate>
+			</TabControl.ItemTemplate>
+			<TabControl.ContentTemplate>
+				<DataTemplate>
+					<local:BrowserPageView/>
+				</DataTemplate>				
+			</TabControl.ContentTemplate>
+		</TabControl>
 	</DockPanel>
 </UserControl>

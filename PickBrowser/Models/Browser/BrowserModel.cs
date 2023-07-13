@@ -1,84 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reactive.Concurrency;
 
-using Microsoft.Web.WebView2.Wpf;
-
-using PickBrowser.Services;
-using PickBrowser.Services.Config;
+using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace PickBrowser.Models.Browser;
-
 public class BrowserModel {
-	private readonly Config _config;
-	public WebView2? WebView {
-		get;
-		private set;
-	}
-
-	public ReactiveProperty<string> Url {
+	public ReactiveCollection<BrowserPageModel> Tabs {
 		get;
 	} = new();
 
-	public ReactiveProperty<bool> CanGoBack {
-		get;
-	} = new();
-	public ReactiveProperty<bool> CanGoForward {
-		get;
-	} = new();
-	public ReactiveProperty<bool> IsBusy {
-		get;
-	} = new();
+	public BrowserModel() {
 
-	public BrowserModel(Config config) {
-		this._config = config;
 	}
 
-	public void SetWebView(WebView2 webView2) {
-		this.WebView = webView2;
-		webView2.CoreWebView2.HistoryChanged += (_, _) => {
-			this.CanGoBack.Value = webView2.CanGoBack;
-			this.CanGoForward.Value = webView2.CanGoForward;
-		};
-		webView2.NavigationStarting += (_,e) => {
-			this.IsBusy.Value = true;
-			this.Url.Value = e.Uri;
-		};
-		webView2.NavigationCompleted += (_, _) => {
-			this.IsBusy.Value = false;
-		};
-		webView2.CoreWebView2.NewWindowRequested += (_, e) => {
-			e.Handled = true;
-			this.Navigate(e.Uri);
-		};
+	public BrowserPageModel OpenTab() {
+		var tab = Ioc.Default.GetRequiredService<BrowserPageModel>();
+		this.Tabs.Add(tab);
+		tab.SetParent(this);
+		return tab;
 	}
 
-	public void Navigate(string url) {
-		this.WebView?.CoreWebView2.Navigate(url);
-	}
-
-	public void Stop() {
-		this.WebView?.Stop();
-	}
-
-	public void Reload() {
-		this.WebView?.Reload();
-	}
-
-	public void Back() {
-		if (this.WebView?.CanGoBack ?? false) {
-			this.WebView.GoBack();
-		}
-	}
-	public void Forward() {
-		if (this.WebView?.CanGoForward ?? false) {
-			this.WebView.GoForward();
-		}
-	}
-
-	public void Home() {
-		this.Navigate(this._config.GeneralConfig.HomeUrl.Value);
+	public void CloseTab(BrowserPageModel tab) {
+		this.Tabs.Remove(tab);
 	}
 }

@@ -9,6 +9,6 @@
 		xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
 		Title="ConfigWindow" Height="450" Width="800">
     <Grid>
-        
-    </Grid>
+		<TextBlock Text="comming soon"/>
+	</Grid>
 </Window>

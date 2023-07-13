@@ -51,6 +51,6 @@ public class DownloadTask {
 		HttpClientUtils.SetHttpRequestHeaders(request.Headers, this._networkRequest.RequestHeaders);
 		var response = await this._hc.SendAsync(request);
 		Directory.CreateDirectory("Save");
-		await File.WriteAllBytesAsync(Path.Combine("Save", Path.GetFileName(request.RequestUri.ToString())), await response.ToBinaryAsync());
+		await File.WriteAllBytesAsync(Path.Combine("Save", Path.GetFileName(request.RequestUri.LocalPath.ToString())), await response.ToBinaryAsync());
 	}
 }

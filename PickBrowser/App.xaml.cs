@@ -43,6 +43,7 @@ public partial class App : Application {
 				.AddTransient<NetworkModel>()
 				.AddTransient<BrowserViewModel>()
 				.AddTransient<BrowserModel>()
+				.AddTransient<BrowserPageModel>()
 				.AddTransient<DownloadViewModel>()
 				.AddTransient<DownloadModel>()
 				.AddTransient<StatusBarViewModel>()
@@ -53,17 +54,17 @@ public partial class App : Application {
 
 	}
 	protected override void OnStartup(StartupEventArgs e) {
-		var cms = Ioc.Default.GetService<ConfigManageService>();
-		cms!.SetFilePath(this._configFilePath);
+		var cms = Ioc.Default.GetRequiredService<ConfigManageService>();
+		cms.SetFilePath(this._configFilePath);
 		cms.Load();
 
 		UIDispatcherScheduler.Initialize();
-		this.MainWindow = Ioc.Default.GetService<MainWindow>();
+		this.MainWindow = Ioc.Default.GetRequiredService<MainWindow>();
 		ReactivePropertyScheduler.SetDefault(UIDispatcherScheduler.Default);
-		this.MainWindow?.Show();
+		this.MainWindow.Show();
 		base.OnStartup(e);
 
-		var ps = Ioc.Default.GetService<ProxyService>();
-		ps!.Start();
+		var ps = Ioc.Default.GetRequiredService<ProxyService>();
+		ps.Start();
 	}
 }

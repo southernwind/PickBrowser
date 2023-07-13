@@ -38,6 +38,17 @@ public class ProxyService {
 
 	public ProxyService(ConfigManageService configManageService) {
 		this._configManageService = configManageService;
+
+
+		// ドメインブロック
+		var domains = File.ReadAllLines("Assets\\BlockDomains.txt").ToList();
+		if (Directory.Exists("Assets\\BlockDomains")) {
+			foreach (var file in Directory.EnumerateFiles("Assets\\BlockDomains").Where(x => x.EndsWith(".txt"))) {
+				domains.AddRange(File.ReadAllLines(file));
+			}
+		}
+		this._blockDomainList = domains.OrderBy(x => x).ToArray();
+
 		this.AfterSessionComplete = Observable.FromEvent<SessionStateHandler, Session>(
 			h => (e) => h(e),
 			h => FiddlerApplication.AfterSessionComplete += h,
@@ -92,15 +103,6 @@ public class ProxyService {
 		   h => FiddlerApplication.ResponseHeadersAvailable += h,
 		   h => FiddlerApplication.ResponseHeadersAvailable -= h)
 		   .ToReactiveProperty();
-
-		// ドメインブロック
-		var domains = File.ReadAllLines("Assets\\BlockDomains.txt").ToList();
-		if (Directory.Exists("Assets\\BlockDomains")) {
-			foreach (var file in Directory.EnumerateFiles("Assets\\BlockDomains").Where(x => x.EndsWith(".txt"))) {
-				 domains.AddRange(File.ReadAllLines(file));
-			}
-		}
-		this._blockDomainList = domains.OrderBy(x => x).ToArray();
 
 		this.BeforeRequest.Where(x => x != null).Subscribe(x => {
 			var domain = Regex.Replace(x!.url, "/.*$", "");

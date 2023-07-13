@@ -1,55 +1,31 @@
-using Microsoft.Web.WebView2.Wpf;
+using System.Reactive.Concurrency;
 
 using PickBrowser.Models.Browser;
 
 namespace PickBrowser.ViewModels;
 public class BrowserViewModel {
-	private readonly BrowserModel _browserModel;
-	public ReactiveProperty<string> Url {
+	public ReadOnlyReactiveCollection<BrowserPageViewModel> Tabs {
 		get;
 	}
 
-	public ReadOnlyReactiveProperty<bool> IsBusy {
-		get;
-	}
-
-	public ReactiveCommand BackCommand {
-		get;
-	}
-	public ReactiveCommand ForwardCommand {
-		get;
-	}
-	public ReactiveCommand<string> NavigateCommand {
+	public ReactiveProperty<BrowserPageViewModel> CurrentTab {
 		get;
 	} = new();
 
-	public ReactiveCommand StopCommand {
-		get;
-	} = new();
-
-	public ReactiveCommand ReloadCommand {
-		get;
-	} = new();
-
-	public ReactiveCommand HomeCommand {
+	public ReactiveCommand OpenTabCommand {
 		get;
 	} = new();
 
 	public BrowserViewModel(BrowserModel browserModel) {
-		this._browserModel = browserModel;
-		this.BackCommand = browserModel.CanGoBack.ToReactiveCommand();
-		this.BackCommand.Subscribe(browserModel.Back);
-		this.ForwardCommand = browserModel.CanGoForward.ToReactiveCommand();
-		this.ForwardCommand.Subscribe(browserModel.Forward);
-		this.NavigateCommand.Subscribe(browserModel.Navigate);
-		this.StopCommand.Subscribe(browserModel.Stop);
-		this.ReloadCommand.Subscribe(browserModel.Reload);
-		this.HomeCommand.Subscribe(browserModel.Home);
-		this.Url = browserModel.Url;
-		this.IsBusy = browserModel.IsBusy.ToReadOnlyReactiveProperty();
-	}
+		this.Tabs = browserModel.Tabs.ToReadOnlyReactiveCollection(x => new BrowserPageViewModel(x));
+		this.Tabs.ObserveAddChanged().Subscribe(async x => {
+			await x.CreateWebViewAsync();
+		});
 
-	public void SetWebView(WebView2 webView2) {
-		this._browserModel.SetWebView(webView2);
+		this.OpenTabCommand.Subscribe(async () => {
+			var tab = browserModel.OpenTab();
+			await tab.EnsureInitializedAsync();
+			this.CurrentTab.Value = this.Tabs.Last();
+		});
 	}
 }
