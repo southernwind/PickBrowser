@@ -7,6 +7,19 @@
 				xmlns:local="clr-namespace:PickBrowser.Views"
 				mc:Ignorable="d" 
 				d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance vm:DownloadViewModel}">
+	<UserControl.Resources>
+		<Style TargetType="{x:Type Grid}" x:Key="DownloadTask">
+			<Setter Property="Background" Value="White"/>
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding HasError.Value}" Value="True">
+					<Setter Property="Background" Value="LightCoral"/>
+				</DataTrigger>
+				<DataTrigger Binding="{Binding IsCompleted.Value}" Value="True">
+					<Setter Property="Background" Value="LightGreen"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+	</UserControl.Resources>
 	<ListBox
             Grid.Row="1"
             Grid.Column="0"
@@ -14,8 +27,58 @@
 			ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 		<ListBox.ItemTemplate>
 			<DataTemplate>
-				<Grid>
-					<TextBlock Text="{Binding Name.Value}"/>
+				<Grid Style="{StaticResource DownloadTask}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					<Grid
+						Grid.Column="0"
+						Grid.Row="0"
+						Grid.ColumnSpan="2">
+						<TextBlock Text="{Binding Name.Value,Mode=OneWay}"/>
+					</Grid>
+					
+					<ProgressBar
+						Grid.Column="0"
+						Grid.Row="1"
+						Grid.ColumnSpan="2"
+						Maximum="1"
+						Minimum="0"
+						Foreground="ForestGreen"
+						Value="{Binding ProgressRate.Value,Mode=OneWay}"
+						Height="20"/>
+					<TextBlock
+						Grid.Column="0"
+						Grid.Row="2"
+						Grid.ColumnSpan="2"
+					>
+						<Run Text="{Binding DownloadedFileSize.Value,Mode=OneWay,Converter={StaticResource FileSizeConverter}}"/>
+						<Run Text="/"/>
+						<Run Text="{Binding FileSize.Value,Mode=OneWay,Converter={StaticResource FileSizeConverter}}"/>
+						<Run Text=" ("/>
+						<Run Text="{Binding ProgressRate.Value,Mode=OneWay,Converter={StaticResource DoubleToPercentageConverter}}"/>
+						<Run Text="%)"/>
+					</TextBlock>
+					<Grid
+						Grid.Column="1"
+						Grid.Row="2"
+						Grid.ColumnSpan="1"
+						Visibility="{Binding HasError.Value,Converter={StaticResource BooleanToVisibilityConverter}}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Text="{Binding Error.Value.Message, Mode=OneWay}" TextWrapping="Wrap"/>
+						<StackPanel Orientation="Horizontal" Grid.Row="1">
+							<Button Content="再実行" Width="100"/>
+						</StackPanel>
+					</Grid>
 				</Grid>
 			</DataTemplate>
 		</ListBox.ItemTemplate>

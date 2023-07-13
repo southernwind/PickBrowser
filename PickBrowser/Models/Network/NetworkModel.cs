@@ -26,4 +26,8 @@ public class NetworkModel {
 	public void AddDownloadQueue(IEnumerable<NetworkRequest> networkRequests) {
 		this._downloadManageService.AddDownloadQueue(networkRequests);
 	}
+
+	public void ClearHistory() {
+		this.RequestList.Clear();
+	}
 }

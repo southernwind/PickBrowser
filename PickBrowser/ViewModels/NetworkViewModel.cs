@@ -25,6 +25,10 @@ public class NetworkViewModel {
 		get;
 	} = new();
 
+	public ReactiveCommand ClearHistoryCommand {
+		get;
+	} = new();
+
 	public NetworkViewModel(NetworkModel networkModel) {
 		this.RequestList =  networkModel.RequestList.ToReadOnlyReactiveCollection();
 		this.FilteredRequestList = this.RequestList.ToFilteredReadOnlyObservableCollection(this.Filter);
@@ -34,6 +38,7 @@ public class NetworkViewModel {
 				this.FilteredRequestList.Refresh(this.Filter);
 			});
 		this.DownloadCommand.Subscribe(x => networkModel.AddDownloadQueue(new[] { x }));
+		this.ClearHistoryCommand.Subscribe(networkModel.ClearHistory);
 	}
 
 	private bool  Filter(NetworkRequest request) {

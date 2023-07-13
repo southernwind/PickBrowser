@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -26,11 +27,28 @@ public class DownloadTask {
 		get;
 	} = new();
 
+	public ReactiveProperty<long> FileSize {
+		get;
+	} = new();
+
+	public ReactiveProperty<long> DownloadedFileSize {
+		get;
+	} = new();
+
+
+	public ReactiveProperty<double> ProgressRate {
+		get;
+	} = new();
+
 	public ReactiveProperty<TaskPriority> Priority {
 		get;
 	} = new();
 
 	public ReactiveProperty<bool> HasError {
+		get;
+	} = new();
+
+	public ReactiveProperty<Exception?> Error {
 		get;
 	} = new();
 
@@ -49,8 +67,30 @@ public class DownloadTask {
 		request.Method = HttpClientUtils.StringToHttpMethod(this._networkRequest.Method);
 		request.RequestUri = new Uri(this._networkRequest.AbsoluteUrl);
 		HttpClientUtils.SetHttpRequestHeaders(request.Headers, this._networkRequest.RequestHeaders);
-		var response = await this._hc.SendAsync(request);
+		var response = await this._hc.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+		if (!response.IsSuccessStatusCode) {
+			this.HasError.Value = true;
+			this.Error.Value = new Exception($"Status Code = {response.StatusCode}");
+		}
+
+		using var stream = await response.ToStreamAsync();
 		Directory.CreateDirectory("Save");
-		await File.WriteAllBytesAsync(Path.Combine("Save", Path.GetFileName(request.RequestUri.LocalPath.ToString())), await response.ToBinaryAsync());
+		var path = Path.Combine("Save", Path.GetFileName(request.RequestUri.LocalPath.ToString()));
+		using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+		var bufferSize = 1024;
+		var buffer = new byte[bufferSize];
+		var fileSize = (long)response.Content.Headers.ContentLength!;
+		this.FileSize.Value = fileSize;
+		var completed = 0d;
+		while (true) {
+			var t = await stream.ReadAsync(buffer.AsMemory(0, bufferSize));
+			if (t == 0) {
+				break;
+			}
+			completed += t;
+			this.ProgressRate.Value = completed / fileSize;
+			this.DownloadedFileSize.Value = (long)completed;
+			await fileStream.WriteAsync(buffer.AsMemory(0, t));
+		}
 	}
 }

@@ -94,16 +94,20 @@ public class BrowserPageViewModel {
 	}
 
 	public async Task Close() {
-		this._browserModel.Close();
-		var folder = this.WebView2?.CoreWebView2?.Environment.UserDataFolder;
-		var processId = this.WebView2?.CoreWebView2?.BrowserProcessId;
-		this.WebView2?.Dispose();
-		if (processId != null) {
-			var process = Process.GetProcessById((int)processId);
-			await process.WaitForExitAsync();
-		}
-		if (!string.IsNullOrEmpty(folder) && System.IO.Directory.Exists(folder)) {
-			System.IO.Directory.Delete(folder, true);
+		try {
+			this._browserModel.Close();
+			var folder = this.WebView2?.CoreWebView2?.Environment.UserDataFolder;
+			var processId = this.WebView2?.CoreWebView2?.BrowserProcessId;
+			this.WebView2?.Dispose();
+			if (processId != null) {
+				var process = Process.GetProcessById((int)processId);
+				await process.WaitForExitAsync();
+			}
+			if (!string.IsNullOrEmpty(folder) && System.IO.Directory.Exists(folder)) {
+				System.IO.Directory.Delete(folder, true);
+			}
+		}catch {
+
 		}
 	}
 }

@@ -6,7 +6,7 @@
 		xmlns:local="clr-namespace:PickBrowser.Views"
 		xmlns:vm="clr-namespace:PickBrowser.ViewModels"
 		mc:Ignorable="d"
-		Title="MainWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance vm:MainWindowViewModel}">
+		Title="PickBrowser" Height="450" Width="800" d:DataContext="{d:DesignInstance vm:MainWindowViewModel}">
 	<DockPanel>
 		<local:StatusBarView
 			DataContext="{Binding StatusBarViewModel}"

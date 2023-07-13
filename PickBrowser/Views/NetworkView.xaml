@@ -15,12 +15,16 @@
 		</Grid.ColumnDefinitions>
 		<Grid Grid.Column="0" >
 			<Grid.RowDefinitions>
-				<RowDefinition Height="30px"/>
+				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
-			<TextBox
-				Grid.Row="0"
-				Text="{Binding UrlFilter.Value,Mode=OneWayToSource}"/>
+			<DockPanel Grid.Row="0">
+				<Button DockPanel.Dock="Right" Command="{Binding ClearHistoryCommand}">
+					<iconPacks:PackIconEvaIcons Kind="Close" />
+				</Button>
+				<TextBox
+					Text="{Binding UrlFilter.Value,Mode=OneWayToSource}"/>
+			</DockPanel>
 			<ListBox
 				Grid.Row="1"
 				ItemsSource="{Binding FilteredRequestList}"
