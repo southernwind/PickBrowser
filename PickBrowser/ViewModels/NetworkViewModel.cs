@@ -1,3 +1,5 @@
+using Org.BouncyCastle.Asn1.Ocsp;
+
 using PickBrowser.Models.Network;
 using PickBrowser.Models.Network.Objects;
 
@@ -5,11 +7,11 @@ using Reactive.Bindings.Helpers;
 
 namespace PickBrowser.ViewModels;
 public class NetworkViewModel {
-	public ReadOnlyReactiveCollection<NetworkRequest> RequestList {
+	public ReadOnlyReactiveCollection<NetworkRequestViewModel> RequestList {
 		get;
 	}
 
-	public IFilteredReadOnlyObservableCollection<NetworkRequest> FilteredRequestList {
+	public IFilteredReadOnlyObservableCollection<NetworkRequestViewModel> FilteredRequestList {
 		get;
 	}
 
@@ -17,11 +19,11 @@ public class NetworkViewModel {
 		get;
 	} = new("");
 
-	public ReactiveProperty<NetworkRequest> SelectedRequest {
+	public ReactiveProperty<NetworkRequestViewModel> SelectedRequest {
 		get;
 	} = new();
 
-	public ReactiveCommand<NetworkRequest> DownloadCommand {
+	public ReactiveCommand<NetworkRequestViewModel> DownloadCommand {
 		get;
 	} = new();
 
@@ -29,19 +31,40 @@ public class NetworkViewModel {
 		get;
 	} = new();
 
+	public ReactiveCommand CheckAllCommand {
+		get;
+	} = new();
+
+	public ReactiveCommand AllCheckedFileDownloadCommand {
+		get;
+	} = new();
+
 	public NetworkViewModel(NetworkModel networkModel) {
-		this.RequestList =  networkModel.RequestList.ToReadOnlyReactiveCollection();
+		this.RequestList =  networkModel.RequestList.ToReadOnlyReactiveCollection(x => new NetworkRequestViewModel(x));
 		this.FilteredRequestList = this.RequestList.ToFilteredReadOnlyObservableCollection(this.Filter);
 		this.UrlFilter
 			.ObserveOnUIDispatcher()
 			.Subscribe(urlFilter => {
 				this.FilteredRequestList.Refresh(this.Filter);
 			});
-		this.DownloadCommand.Subscribe(x => networkModel.AddDownloadQueue(new[] { x }));
+		this.DownloadCommand.Subscribe(x => networkModel.AddDownloadQueue(new[] { x.NetworkRequest }));
 		this.ClearHistoryCommand.Subscribe(networkModel.ClearHistory);
+		this.CheckAllCommand.Subscribe(() => {
+			var checkedValue = !this.FilteredRequestList.All(x => x.Checked.Value);
+			foreach (var vm in this.FilteredRequestList) {
+				vm.Checked.Value = checkedValue;
+			}
+		});
+		this.AllCheckedFileDownloadCommand.Subscribe(() => {
+			var targets =this.RequestList.Where(x => x.Checked.Value).ToList();
+			networkModel.AddDownloadQueue(targets.Select(x => x.NetworkRequest));
+			foreach (var t in targets) {
+				t.Checked.Value = false;
+			}
+		});
 	}
 
-	private bool  Filter(NetworkRequest request) {
+	private bool  Filter(NetworkRequestViewModel request) {
 		return request.RequestUrl.Contains(this.UrlFilter.Value);
 	}
 }

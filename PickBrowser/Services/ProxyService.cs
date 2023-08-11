@@ -133,7 +133,7 @@ public class ProxyService {
 		// プロキシサーバー開始
 		FiddlerApplication.Startup(
 			new FiddlerCoreStartupSettingsBuilder()
-				.ListenOnPort(23081)
+				.ListenOnPort(this._configManageService.Config.GeneralConfig.Port.Value)
 				.ChainToUpstreamGateway()
 				.DecryptSSL()
 				.OptimizeThreadPool()

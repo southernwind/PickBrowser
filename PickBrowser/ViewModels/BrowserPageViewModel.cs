@@ -5,10 +5,12 @@ using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
 using PickBrowser.Models.Browser;
+using PickBrowser.Services;
 
 namespace PickBrowser.ViewModels;
 public class BrowserPageViewModel {
 	private static int profileCount = 0;
+	private readonly ConfigManageService _configManageService;
 	public WebView2? WebView2 {
 		get;
 		set;
@@ -58,7 +60,12 @@ public class BrowserPageViewModel {
 		get;
 	} = new();
 
-	public BrowserPageViewModel(BrowserPageModel browserModel) {
+	public AsyncReactiveCommand ClearCacheCommand {
+		get;
+	} = new();
+
+	public BrowserPageViewModel(BrowserPageModel browserModel, ConfigManageService configManageService) {
+		this._configManageService = configManageService;
 		this._browserModel = browserModel;
 		this.BackCommand = browserModel.CanGoBack.ToAsyncReactiveCommand();
 		this.BackCommand.Subscribe(browserModel.Back);
@@ -73,6 +80,7 @@ public class BrowserPageViewModel {
 		this.PageTitle = browserModel.PageTitle.ToReadOnlyReactiveProperty("");
 		this.IsBusy = browserModel.IsBusy.ToReadOnlyReactiveProperty();
 		this.CloseTab.Subscribe(this.Close);
+		this.ClearCacheCommand.Subscribe(browserModel.ClearCacheAsync);
 	}
 
 	public async Task CreateWebViewAsync() {
@@ -82,7 +90,7 @@ public class BrowserPageViewModel {
 			}
 		};
 		var envOptions = new CoreWebView2EnvironmentOptions {
-			AdditionalBrowserArguments = "--proxy-server=http://127.0.0.1:23081"
+			AdditionalBrowserArguments = $"--proxy-server=http://127.0.0.1:{this._configManageService.Config.GeneralConfig.Port.Value}"
 		};
 		var env = await CoreWebView2Environment.CreateAsync(null, null, envOptions);
 		var options = env.CreateCoreWebView2ControllerOptions();

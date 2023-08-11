@@ -12,6 +12,7 @@ using PickBrowser.Models.Download;
 using PickBrowser.Models.Network;
 using PickBrowser.Services;
 using PickBrowser.Services.Config;
+using PickBrowser.Services.Events;
 using PickBrowser.ViewModels;
 using PickBrowser.Views;
 
@@ -49,6 +50,7 @@ public partial class App : Application {
 				.AddTransient<StatusBarViewModel>()
 				.AddTransient<ConfigWindowViewModel>()
 				.AddSingleton<IDialogService, DialogService>()
+				.AddSingleton<BrowsingEventService>()
 				.BuildServiceProvider()
 			);
 

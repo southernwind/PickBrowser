@@ -16,6 +16,7 @@
 		<Grid Grid.Column="0" >
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			<DockPanel Grid.Row="0">
@@ -23,15 +24,25 @@
 					<iconPacks:PackIconEvaIcons Kind="Close" />
 				</Button>
 				<TextBox
-					Text="{Binding UrlFilter.Value,Mode=OneWayToSource}"/>
+					Text="{Binding UrlFilter.Value,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}"/>
 			</DockPanel>
+			<StackPanel Grid.Row="1" Orientation="Horizontal">
+				<Button Command="{Binding CheckAllCommand}">
+					<iconPacks:PackIconBootstrapIcons Kind="CheckAll" />
+				</Button>
+				<Button Command="{Binding AllCheckedFileDownloadCommand}">
+					<iconPacks:PackIconTypicons Kind="Download" />
+				</Button>
+			</StackPanel>
 			<ListBox
-				Grid.Row="1"
+				Grid.Row="2"
 				ItemsSource="{Binding FilteredRequestList}"
 				SelectedItem="{Binding SelectedRequest.Value}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal">
+							<CheckBox IsChecked="{Binding Checked.Value,Mode=TwoWay}"/>
+							<iconPacks:PackIconOcticons Kind="{Binding RequestUrl, Converter={StaticResource UrlToIconConverter}}"/>
 							<Button
 								Command="{Binding DataContext.DownloadCommand,RelativeSource={RelativeSource AncestorType=ListBox}}"
 								CommandParameter="{Binding }">
@@ -59,7 +70,7 @@
 				</ItemsControl>
 			</Expander>
 			<Expander Header="Response" IsExpanded="True">
-				<ItemsControl ItemsSource="{Binding SelectedRequest.Value.ResponseHeaders}">
+				<ItemsControl ItemsSource="{Binding SelectedRequest.Value.ResponseHeaders,Mode=OneWay}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<TextBlock>

@@ -2,6 +2,8 @@ using System.Reactive.Concurrency;
 
 using CommunityToolkit.Mvvm.DependencyInjection;
 
+using PickBrowser.Services.Events;
+
 namespace PickBrowser.Models.Browser;
 public class BrowserModel {
 	public ReactiveCollection<BrowserPageModel> Tabs {

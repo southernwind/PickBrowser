@@ -9,6 +9,8 @@ using ScrapingLibrary;
 namespace PickBrowser.Services; 
 public class DownloadManageService {
 	private readonly HttpClientWrapper _hc;
+	private readonly ConfigManageService _configManageService;
+
 	public ReactiveCollection<DownloadTask> DownloadQueue {
 		get;
 	} = new();
@@ -19,8 +21,9 @@ public class DownloadManageService {
 
 	public int MaxRunningTaskCount { get; } = 10;
 
-	public DownloadManageService(HttpClientWrapper hc) {
+	public DownloadManageService(HttpClientWrapper hc, ConfigManageService configManageService) {
 		this._hc = hc;
+		this._configManageService = configManageService;
 		this.DownloadQueue
 			.ObserveAddChanged()
 			.ToUnit()
@@ -66,7 +69,7 @@ public class DownloadManageService {
 
 	public void AddDownloadQueue(IEnumerable<NetworkRequest> networkRequests) {
 		lock (this) {
-			this.DownloadQueue.AddRange(networkRequests.Select(x => new DownloadTask(x, this._hc)));
+			this.DownloadQueue.AddRange(networkRequests.Select(x => new DownloadTask(x, this._hc, this._configManageService)));
 		}
 	}
 }

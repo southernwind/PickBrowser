@@ -6,4 +6,5 @@
 	<converters:DoubleToPercentageConverter x:Key="DoubleToPercentageConverter" />
 	<converters:DecodeUrlConverter x:Key="DecodeUrlConverter" />
 	<converters:FileSizeConverter x:Key="FileSizeConverter" />
+	<converters:UrlToIconConverter x:Key="UrlToIconConverter" />
 </ResourceDictionary>

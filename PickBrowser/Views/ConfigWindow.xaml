@@ -7,8 +7,33 @@
 		mc:Ignorable="d"
 		xmlns:vm="clr-namespace:PickBrowser.ViewModels"
 		xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-		Title="ConfigWindow" Height="450" Width="800">
-    <Grid>
-		<TextBlock Text="comming soon"/>
-	</Grid>
+		Title="ConfigWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance vm:ConfigWindowViewModel}">
+	<DockPanel>
+		<DockPanel DockPanel.Dock="Bottom">
+			<Button DockPanel.Dock="Right" Command="{Binding SaveCommand}">
+				<iconPacks:PackIconEvaIcons Kind="SaveOutline" />
+			</Button>
+			<Grid/>
+		</DockPanel>
+		<StackPanel ScrollViewer.CanContentScroll="True">
+			<GroupBox Header="General">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="HTTP Range Header"/>
+					<ComboBox Grid.Row="0" Grid.Column="1" Margin="15 0" ItemsSource="{Binding HttpRangeHeaderCandidate}" SelectedValue="{Binding HttpRangeHeader.Value}" SelectedValuePath="Key" DisplayMemberPath="Value"/>
+
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="Rename Rule"/>
+					<ComboBox Grid.Row="1" Grid.Column="1" Margin="15 0" ItemsSource="{Binding RenameRuleCandidate}" SelectedValue="{Binding RenameRule.Value}" SelectedValuePath="Key" DisplayMemberPath="Value"/>
+				</Grid>
+			</GroupBox>
+		</StackPanel>
+	</DockPanel>
 </Window>

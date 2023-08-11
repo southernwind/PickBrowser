@@ -46,6 +46,9 @@
 			<Button DockPanel.Dock="Left" Command="{Binding HomeCommand}">
 				<iconPacks:PackIconRemixIcon Kind="Home2Line" />
 			</Button>
+			<Button DockPanel.Dock="Right" Command="{Binding ClearCacheCommand}">
+				<iconPacks:PackIconForkAwesome Kind="Trash" /> 
+			</Button>
 			<TextBox Text="{Binding Url.Value}">
 				<TextBox.InputBindings>
 					<KeyBinding Gesture="Enter" Command="{Binding NavigateCommand}" CommandParameter="{Binding Text,RelativeSource={RelativeSource AncestorType=TextBox}}"/>

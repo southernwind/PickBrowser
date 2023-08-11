@@ -1,14 +1,17 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using System.Web;
 
 using Microsoft.Web.WebView2.Wpf;
 
 using PickBrowser.Services.Config;
+using PickBrowser.Services.Events;
 
 namespace PickBrowser.Models.Browser;
 
 public class BrowserPageModel {
 	private readonly Config _config;
+	private readonly BrowsingEventService _browsingEventService;
 	private BrowserModel? _parent;
 	public WebView2? WebView {
 		get;
@@ -36,14 +39,14 @@ public class BrowserPageModel {
 	public ReactiveProperty<bool> IsBusy {
 		get;
 	} = new();
-
-	public BrowserPageModel(Config config) {
-		this._config = config;
-	}
-
 	public ReactiveProperty<bool> IsInitialized {
 		get;
 	} = new(false);
+
+	public BrowserPageModel(Config config, BrowsingEventService browsingEventService) {
+		this._config = config;
+		this._browsingEventService = browsingEventService;
+	}
 
 #pragma warning disable CS8774 // 終了時にメンバーには null 以外の値が含まれている必要があります。
 	[MemberNotNull(nameof(this.WebView))]
@@ -83,6 +86,14 @@ public class BrowserPageModel {
 			this.FaviconUri.Value = webView2.CoreWebView2.FaviconUri;
 		};
 
+		webView2.NavigationStarting+= (x, y) => {
+			this._browsingEventService.NavigationStarting.OnNext(y);
+		};
+
+		webView2.CoreWebView2.DocumentTitleChanged += (x, y) => {
+			this._browsingEventService.CurrentDocumentTitle.Value = webView2.CoreWebView2.DocumentTitle;
+		};
+
 		this.IsInitialized.Value = true;
 	}
 
@@ -91,7 +102,7 @@ public class BrowserPageModel {
 		try {
 			this.WebView.CoreWebView2.Navigate(url);
 		} catch (ArgumentException) {
-
+			this.WebView.CoreWebView2.Navigate("https://www.google.com/search?q=" + HttpUtility.UrlEncode(url));
 		}
 	}
 
@@ -128,5 +139,10 @@ public class BrowserPageModel {
 
 	public void Close() {
 		this._parent!.CloseTab(this);
+	}
+
+	public async Task ClearCacheAsync() {
+		await this.EnsureInitializedAsync();
+		await this.WebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Network.clearBrowserCache", "{}");
 	}
 }
