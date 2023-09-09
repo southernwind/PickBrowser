@@ -148,8 +148,8 @@ public class DownloadTask {
 
 			var tempDir = Path.Combine(this._configManageService.Config.GeneralConfig.TempFolder.Value, $"{DateTime.Now.Ticks}-{Thread.CurrentThread.ManagedThreadId}");
 			Directory.CreateDirectory(tempDir);
-			var path = Path.Combine(tempDir, Path.GetFileName(this._networkRequest.AbsoluteUrl));
-			process.StartInfo.Arguments = $"-protocol_whitelist file,http,https,tcp,tls,crypto -i {this._networkRequest.AbsoluteUrl} -c copy -bsf:a aac_adtstoasc -movflags faststart {path}";
+			var path = Path.Combine(tempDir, "master.mp4");
+			process.StartInfo.Arguments = $"-protocol_whitelist file,http,https,tcp,tls,crypto -i \"{this._networkRequest.AbsoluteUrl}\" -c copy -bsf:a aac_adtstoasc -movflags faststart {path}";
 			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.UseShellExecute = false;
 			Console.WriteLine($"{process.StartInfo.FileName} {process.StartInfo.Arguments}");
