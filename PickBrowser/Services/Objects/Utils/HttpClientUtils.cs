@@ -15,6 +15,8 @@ internal static class HttpClientUtils {
 				return HttpMethod.Put;
 			case "DELETE":
 				return HttpMethod.Delete;
+			case "OPTIONS":
+				return HttpMethod.Options;
 		}
 		throw new Exception("unknown method");
 	}
