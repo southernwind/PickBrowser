@@ -1,3 +1,6 @@
+using System.Media;
+using System.Text.RegularExpressions;
+
 using Org.BouncyCastle.Asn1.Ocsp;
 
 using PickBrowser.Models.Network;
@@ -62,9 +65,20 @@ public class NetworkViewModel {
 				t.Checked.Value = false;
 			}
 		});
+		var player = new SoundPlayer("Assets/maou_se_system34.wav");
+		this.FilteredRequestList.ObserveAddChanged<NetworkRequestViewModel>().Subscribe(x => {
+			if (string.IsNullOrEmpty(this.UrlFilter.Value)) {
+				return;
+			}
+			player.Play();
+		});
 	}
 
 	private bool  Filter(NetworkRequestViewModel request) {
-		return request.RequestUrl.Contains(this.UrlFilter.Value);
+		try {
+			return Regex.IsMatch(request.RequestUrl, this.UrlFilter.Value);
+		} catch {
+			return false;
+		}
 	}
 }

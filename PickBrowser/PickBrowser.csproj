@@ -28,4 +28,9 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\ScrapingLibrary\ScrapingLibrary\ScrapingLibrary.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Assets\maou_se_system34.wav">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>
